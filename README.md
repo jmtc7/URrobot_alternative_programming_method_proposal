@@ -20,6 +20,6 @@ Then, after advancing with the code, I started designing a final version of a ne
 </p>
 
 
-<p float="centre">
+<p float="center">
   <img src="/multimedia/3d_case/full_separated.png" width="400" /> 
 </p>
