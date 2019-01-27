@@ -8,7 +8,7 @@ The project has 2 main parts:
 # 3D case
 I started attaching just the Raspberry and a camera to the wirst of the robot using flanges and adhesive tape to make some initial test and trials. I then developed a really simple 3D printed mounting that made it possible a more solid (yet provisional) attach between the robot and the two devices mentioned before. This mounting was composed by this two plates:
 <p float="left">
-  <img src="/multimedia/3d_case/older_versions/v1_downView.png" width="400" /> 
+  <img src="/multimedia/3d_case/older_versions/v1_downView.png" width="300" /> 
   <img src="/multimedia/3d_case/older_versions/v1_upperView.png" width="400" />
 </p>
 
@@ -16,6 +16,6 @@ Then, after advancing with the code, I started designing a final version of a ne
 
 <p float="left">
   <img src="/multimedia/3d_case/full_separated.png" width="400" /> 
-  <img src="/multimedia/3d_case/real_full_downView.png" width="400" />
-  <img src="/multimedia/3d_case/real_bottomPlate_empty.png" width="400" />
+  <img src="/multimedia/3d_case/real_full_downView.jpg" width="400" />
+  <img src="/multimedia/3d_case/real_bottomPlate_empty.jpg" width="400" />
 </p>
