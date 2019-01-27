@@ -14,12 +14,12 @@ I started attaching just the Raspberry and a camera to the wirst of the robot us
 
 Then, after advancing with the code, I started designing a final version of a new case. It will be adapted to the needs I met during the developement (such as including a distance sensor) and, obviously, will include general improvements such as a more aesthetic finish, more protection, ventilation, better and more solid coupling:
 
-<p align="center" width="400">
-  <img src="/multimedia/3d_case/real_full_downView.jpg" />
-  <img src="/multimedia/3d_case/real_bottomPlate_empty.jpg" />
+<p align="center">
+  <img src="/multimedia/3d_case/real_full_downView.jpg" width="400" />
+  <img src="/multimedia/3d_case/real_bottomPlate_empty.jpg" width="400" />
 </p>
 
 
 <p align="center">
-  <img src="/multimedia/3d_case/full_separated.png" width="400" /> 
+  <img src="/multimedia/3d_case/full_separated.png" width="500" /> 
 </p>
