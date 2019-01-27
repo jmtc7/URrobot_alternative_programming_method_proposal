@@ -7,7 +7,7 @@ The project has 2 main parts:
 
 # 3D case
 I started attaching just the Raspberry and a camera to the wirst of the robot using flanges and adhesive tape to make some initial test and trials. I then developed a really simple 3D printed mounting that made it possible a more solid (yet provisional) attach between the robot and the two devices mentioned before. This mounting was composed by this two plates:
-| ![Upper view](https://github.com/jmtc7/URrobot_alternative_programming_method_proposal/blob/master/multimedia/3d_case/older_versions/v1_upperView.png) | ![Down view](https://github.com/jmtc7/URrobot_alternative_programming_method_proposal/blob/master/multimedia/3d_case/older_versions/v1_downView.png) |
+![upper_view](https://github.com/jmtc7/URrobot_alternative_programming_method_proposal/blob/master/multimedia/3d_case/older_versions/v1_upperView.png "Upper view") ![down_view](https://github.com/jmtc7/URrobot_alternative_programming_method_proposal/blob/master/multimedia/3d_case/older_versions/v1_downView.png "Down view")
 
 Then, after advancing with the code, I started designing a final version of a new case. It will be adapted to the needs I met during the developement (such as including a distance sensor) and, obviously, will include general improvements such as a more aesthetic finish, more protection, ventilation, better and more solid coupling:
 
