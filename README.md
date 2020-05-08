@@ -2,8 +2,8 @@
 This project's objective is not to create a real full-operative alternative to the current programming methods for industrial robots but to propose an idea developing a Proof of Concept to show that this approach could have potential.
 
 The project has 2 main parts:
-* **3D-printable case** to contain and protect the Raspberry Pi, a camera, a distance sensor and a fan. It also makes it possible to attach the whole system to the UR robot wirst
-* **Python scripts** to program the robot and make it able to replay the teached movements
+* **3D-printable case** to contain and protect the Raspberry Pi, a camera, a distance sensor and a fan. It also makes it possible to attach the whole system to the UR robot wirst.
+* **Python scripts** to program the robot and make it able to replay the teached movements. The robot has to be running its own (simple) program to move according the Modbus TCP-received messages.
 
 Demos of the target segmentation (color and shape filtered) and of the final results (target tracking and following and trajectory reproduction) are available in the following **YouTube videos**:
 
@@ -31,7 +31,12 @@ Then, after advancing with the code, I started designing a **final version of a 
 
 
 ## Scripts
-As mentioned in the introduction, there are two scripts: *programar.py* and *reproducir.py*.
-* ***programar.py*** tracks the centroid of the biggest green triangle perceived by the camera. I convert to HSV, threshold and use the Ramer-Douglas-Peucker algorithm to classify shapes. Then, the neeeded cartesian corrections to center the centroid in the frame are calculated. Finally, they are written in a file and sended to the robot, which will solve the inverse-kinematics to reach the new target.
+### Software in the tool
+As mentioned in the introduction, in the tool, two Python scripts will be executed in the Raspberry Pi: *programar.py* and *reproducir.py*, both of them contained in the *source_code* folder.
 
-* ***reproducir.py***. This script does the same that *programar.py* substituting the computer vision and corrections calculation for just reading a line of the file. The aquired data is then sent to the robot so that it will behave as it did during the programming.
+* ***programar.py*** tracks the centroid of the biggest green triangle perceived by the camera. I convert to HSV, threshold and use the Ramer-Douglas-Peucker algorithm to classify shapes. Then, the neeeded cartesian corrections to center the centroid in the frame are calculated. Finally, they are sent to the robot (which will solve the inverse-kinematics to reach the new target) and written into a corrections file named *correcciones.txt* that will be used by the other script to reproduce the trajectory..
+
+* ***reproducir.py***. This script does the same as *programar.py* but substituting the computer vision and corrections calculation for just reading a line of the corrections file *correcciones.txt*. The aquired data is then sent to the robot so that it will behave as it did during the programming phase.
+
+### Software in the robot
+Appart of these scripts runned on the tool, the robot has to be always processing the messages that it receive via Modbus TCP. This is done by the **7_4_pruebas_modbus** program, also contained in the *source_code* folder. This program will get the correction provided by the tool software using the robot's Modbus TCP registers and move the arm accordingly.
