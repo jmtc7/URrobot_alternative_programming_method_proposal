@@ -11,7 +11,7 @@ Demos of the target segmentation (color and shape filtered) and of the final res
 
 [![Results demo](multimedia/demo_videos/demo_results.gif)](https://www.youtube.com/watch?v=rEhbCNIjvR4&list=PLBYQePjTMEGEnVe6FjThMmySTzwtxLX1B&index=2)
 
-NOTE: This project was developed during my internship at [CFZ Cobots](https://cfzcobots.com/), in Elche (Spain), and submitted in a competition of applications designed for/with Universal Robots robotic arms.
+NOTE: This project was developed during my internship at [CFZ Cobots](https://cfzcobots.com/), in Elche (Spain), and submitted in a [competition](https://cfzcobots.com/i-concurso-cfz-de-aplicaciones-roboticas/) of applications designed for/with Universal Robots robotic arms.
 
 
 ## Documentation and usage
