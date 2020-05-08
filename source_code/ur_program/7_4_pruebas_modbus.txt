@@ -1,0 +1,15 @@
+ Programa
+   Programa de robot
+     'MoveJ'
+     pose_tcp≔get_actual_tcp_pose()
+     corrX≔read_port_register(128)
+     corrY≔read_port_register(129)
+     pose_corregida≔pose_trans(pose_tcp, p[corrX/1000,corrY/1000,0,0,0,0])
+     If corrX≠0 or corrY≠0
+       If read_port_register(130)≟0
+         corrX≔-corrX
+       If read_port_register(131)≟0
+         corrY≔-corrY
+       MoveL
+         pose_corregida
+     Esperar: 0.01

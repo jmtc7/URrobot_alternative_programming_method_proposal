@@ -1,0 +1,279 @@
+def P7_4_pruebas_modbus():
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_tool_voltage(0)
+  set_input_actions_to_default()
+  set_tcp(p[0.0,0.0,0.001,0.0,0.0,0.0])
+  set_payload(0.0)
+  set_gravity([0.0, 0.0, 9.82])
+  # begin: URCap Installation Node
+  #   Source: OmronFQ2, 1.2.0, CFZ COBOTS
+  #   Type: Omron FQ2
+  global fq_XMLRPCdaemon=rpc_factory("xmlrpc", "http://127.0.0.1:40404")
+  image_resolution_x = "0"
+  image_resolution_y = "0"
+  image_size_x = "0.0"
+  image_size_y = "0.0"
+  camera_ip = "192.168.1.199"
+  camera_port = "9876"
+  # end: URCap Installation Node
+  # begin: URCap Installation Node
+  #   Source: RG2 - On Robot, 1.1.1, On Robot ApS
+  #   Type:  Configuración de la RG2
+  global measure_width=0
+  global grip_detected=False
+  global lost_grip=False
+  global zsysx=0
+  global zsysy=0
+  global zsysz=0.06911
+  global zsysm=0.7415
+  global zmasx=0
+  global zmasy=0
+  global zmasz=0.18664
+  global zmasm=0
+  global zmasm=0
+  global zslax=0
+  global zslay=0
+  global zslaz=0
+  global zslam=0
+  global zslam=0
+  thread lost_grip_thread():
+  while True:
+  set_tool_voltage(24)
+  	if True ==get_digital_in(9):
+  		sync()
+  		sync()
+  		sync()
+  		if True == grip_detected:
+  			if False == get_digital_in(8):
+  				grip_detected=False
+  				lost_grip=True
+  			end
+  		end
+  	set_tool_analog_input_domain(0, 1)
+  	set_tool_analog_input_domain(1, 1)
+  	zscale = (get_analog_in(2)-0.026)/2.976
+  	zangle = zscale*1.57079633-0.087266462
+  	zwidth = 5+110*sin(zangle)
+  	global measure_width = (floor(zwidth*10))/10-9.2
+  	end
+  	sync()
+  end
+  end
+  lg_thr = run lost_grip_thread()
+  def RG2(target_width=110, target_force=40, payload=0.0, set_payload=False, depth_compensation=False, slave=False):
+  	grip_detected=False
+  	if slave:
+  		slave_grip_detected=False
+  	else:
+  		master_grip_detected=False
+  	end
+  	timeout = 0
+  	while get_digital_in(9) == False:
+  	  if timeout > 400:
+  	    break
+  	  end
+  	  timeout = timeout+1
+  	  sync()
+  	end
+  	def bit(input):
+  	  msb=65536
+  	  local i=0
+  	  local output=0
+  	  while i<17:
+  	    set_digital_out(8,True)
+  	    if input>=msb:
+  	      input=input-msb
+  	      set_digital_out(9,False)
+  	    else:
+  	      set_digital_out(9,True)
+  	    end
+  	    if get_digital_in(8):
+  	      out=1
+  	    end
+  	    sync()
+  	    set_digital_out(8,False)
+  	    sync()
+  	    input=input*2
+  	    output=output*2
+  	    i=i+1
+  	  end
+  	  return output
+  	end
+  	target_width=target_width+9.2
+  	if target_force>40:
+  	target_force=40
+  	end
+  	if target_force<4:
+  	target_force=4
+  	end
+  	if target_width>110:
+  	target_width=110
+  	end
+  	if target_width<0:
+  	target_width=0
+  	end
+  	rg_data=floor(target_width)*4
+  	rg_data=rg_data+floor(target_force/2)*4*111
+  	if slave:
+  	rg_data=rg_data+16384
+  	end
+  	bit(rg_data)
+  	if depth_compensation:
+  	finger_length = 55.0/1000
+  	finger_heigth_disp = 5.0/1000
+  	center_displacement = 7.5/1000
+  
+  	start_pose = get_forward_kin()
+  	set_analog_inputrange(2, 1)
+  	zscale = (get_analog_in(2)-0.026)/2.976
+  	zangle = zscale*1.57079633-0.087266462
+  	zwidth = 5+110*sin(zangle)
+  
+  	start_depth = cos(zangle)*finger_length
+  
+  	sync()
+  	sync()
+  	timeout = 0
+  	while get_digital_in(9) == True:
+  	  timeout=timeout+1
+  	  sync()
+  	  if timeout > 20:
+  	    break
+  	  end
+  	end
+  	timeout = 0
+  	while get_digital_in(9) == False:
+  	  zscale = (get_analog_in(2)-0.026)/2.976
+  	  zangle = zscale*1.57079633-0.087266462
+  	  zwidth = 5+110*sin(zangle)
+  	  measure_depth = cos(zangle)*finger_length
+  	  compensation_depth = (measure_depth - start_depth)
+  	  target_pose = pose_trans(start_pose,p[0,0,-compensation_depth,0,0,0])
+  	  if timeout > 400:
+  	    break
+  	  end
+  	  timeout=timeout+1
+  	#  servoj(get_inverse_kin(target_pose), t=0.008, lookahead_time=0.033, gain=1500)
+  	#  textmsg(point_dist(target_pose, get_forward_kin()))
+  	#end
+  	#textmsg("end gripper move!!!!!")
+  	#nspeedthr = 0.001
+  	#nspeed = norm(get_actual_tcp_speed())
+  	#while nspeed > nspeedthr:
+  	#  servoj(get_inverse_kin(target_pose), t=0.008, lookahead_time=0.033, gain=1500)
+  	#  nspeed = norm(get_actual_tcp_speed())
+  	#  textmsg(point_dist(target_pose, get_forward_kin()))
+  	#end
+  	servoj(get_inverse_kin(target_pose),0,0,0.008,0.01,2000)
+  	if point_dist(target_pose, get_forward_kin()) > 0.005:
+  	popup("Lower grasping force or max width",title="RG2-lag threshold exceeded", warning=False, error=False, blocking=False)
+  	end
+  	end
+  	nspeed = norm(get_actual_tcp_speed())
+  	while nspeed > 0.001:
+  	servoj(get_inverse_kin(target_pose),0,0,0.008,0.01,2000)
+  	nspeed = norm(get_actual_tcp_speed())
+  	end
+  	end
+  	if depth_compensation==False:
+  	timeout = 0
+  	while get_digital_in(9) == True:
+  	  timeout = timeout+1
+  	  sync()
+  	  if timeout > 20:
+  	    break
+  	  end
+  	end
+  	timeout = 0
+  	while get_digital_in(9) == False:
+  	  timeout = timeout+1
+  	  sync()
+  	  if timeout > 400:
+  	    break
+  	  end
+  	end
+  	end
+  	sync()
+  	sync()
+  	sync()
+  	if set_payload:
+  	if slave:
+  	if get_analog_in(3) < 2:
+  	zslam=0
+  	else:
+  	zslam=payload
+  	end
+  	else:
+  	if get_digital_in(8) == False:
+  	zmasm=0
+  	else:
+  	zmasm=payload
+  	end
+  	end
+  	zload=zmasm+zslam+zsysm
+  	set_payload(zload,[(zsysx*zsysm+zmasx*zmasm+zslax*zslam)/zload,(zsysy*zsysm+zmasy*zmasm+zslay*zslam)/zload,(zsysz*zsysm+zmasz*zmasm+zslaz*zslam)/zload])
+  	end
+  	master_grip_detected=False
+  	master_lost_grip=False
+  	slave_grip_detected=False
+  	slave_lost_grip=False
+  	if True == get_digital_in(8):
+  		master_grip_detected=True
+  	end
+  	if get_analog_in(3)>2:
+  		slave_grip_detected=True
+  	end
+  	grip_detected=False
+  	lost_grip=False
+  	if True == get_digital_in(8):
+  		grip_detected=True
+  	end
+  	zscale = (get_analog_in(2)-0.026)/2.976
+  	zangle = zscale*1.57079633-0.087266462
+  	zwidth = 5+110*sin(zangle)
+  	global measure_width = (floor(zwidth*10))/10-9.2
+  	if slave:
+  	slave_measure_width=measure_width
+  	else:
+  	master_measure_width=measure_width
+  	end
+  	return grip_detected
+  end
+  set_tool_voltage(24)
+  set_tcp(p[0,0,0.18664,0,-0,0])
+  # end: URCap Installation Node
+  while (True):
+    $ 1 "Programa de robot"
+    $ 3 "pose_tcp≔get_actual_tcp_pose()"
+    global pose_tcp= get_actual_tcp_pose ()
+    $ 4 "corrX≔read_port_register(128)"
+    global corrX= read_port_register (128)
+    $ 5 "corrY≔read_port_register(129)"
+    global corrY= read_port_register (129)
+    $ 6 "pose_corregida≔pose_trans(pose_tcp, p[corrX/1000,corrY/1000,0,0,0,0])"
+    global pose_corregida= pose_trans (pose_tcp, p[corrX/1000,corrY/1000,0,0,0,0])
+    $ 7 "If corrX≠0 or corrY≠0"
+    if (corrX != 0  or  corrY != 0):
+      $ 8 "If read_port_register(130)≟0"
+      if ( read_port_register (130) == 0):
+        $ 9 "corrX≔-corrX"
+        global corrX=-corrX
+      end
+      $ 10 "If read_port_register(131)≟0"
+      if ( read_port_register (131) == 0):
+        $ 11 "corrY≔-corrY"
+        global corrY=-corrY
+      end
+      $ 12 "MoveL"
+      $ 13 "pose_corregida"
+      movel(pose_trans(p[0.0,0.0,0.0,0.0,0.0,0.0], pose_corregida), a=1.3, v=0.425)
+    end
+    $ 14 "Esperar: 0.01"
+    sleep(0.01)
+  end
+end
